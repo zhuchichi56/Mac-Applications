@@ -7,9 +7,9 @@ All apps live in the menu bar — no Dock icon, no bloat.
 
 ## 📦 Projects
 
-| App | Description | Tech |
-|-----|-------------|------|
-| [☕ WakeKeeper](#-wakekeeper) | Prevent your Mac from sleeping | Python · rumps · caffeinate |
+| App | Description | Tech | Download |
+|-----|-------------|------|----------|
+| [☕ WakeKeeper](#-wakekeeper) | Prevent your Mac from sleeping | Python · rumps · caffeinate | [⬇ v1.0 DMG](https://github.com/zhuchichi56/Mac-Applications/releases/download/v1.0/WakeKeeper-1.0.dmg) |
 
 ---
 
@@ -53,7 +53,15 @@ Menu bar:  ☕  (idle)   →   ⚡  (keeping awake)
   退出
 ```
 
-### Quick Start
+### Download
+
+[![Download DMG](https://img.shields.io/badge/Download-WakeKeeper_v1.0.dmg-blue?logo=apple)](https://github.com/zhuchichi56/Mac-Applications/releases/download/v1.0/WakeKeeper-1.0.dmg)
+
+1. Open the DMG
+2. Drag **WakeKeeper.app** → **Applications**
+3. Launch from Launchpad — ☕ appears in your menu bar
+
+### Quick Start (from source)
 
 **Requirements:** Python 3.11+, [uv](https://docs.astral.sh/uv/), macOS 10.15+
 
