@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+*.egg-info/
+dist/
+build/
+
+# macOS
+.DS_Store
+*.app/
+*.iconset/
+
+# uv lock file is intentionally committed for reproducible installs
