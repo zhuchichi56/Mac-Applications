@@ -7,6 +7,7 @@ A collection of small macOS apps and installers. Each app has its own section, r
 | App | Version | Type | Download |
 |-----|---------|------|----------|
 | [WakeKeeper](#wakekeeper) | 1.0 | Menu bar utility | [WakeKeeper-1.0.dmg](https://github.com/zhuchichi56/Mac-Applications/releases/download/v1.0/WakeKeeper-1.0.dmg) |
+| [Clash Verge Rev](#clash-verge-rev) | 2.5.1 | Proxy client | [Clash.Verge_2.5.1_aarch64.dmg](https://github.com/zhuchichi56/Mac-Applications/releases/download/clash-verge-rev-v2.5.1/Clash.Verge_2.5.1_aarch64.dmg) |
 | [FastLink Lite](#fastlink-lite) | 3.0.3 | macOS installer | [flapp-lite.pkg](https://github.com/zhuchichi56/Mac-Applications/releases/download/fastlink-lite-v3.0.3/flapp-lite.pkg) |
 
 ## WakeKeeper
@@ -57,6 +58,30 @@ The build script installs `WakeKeeper.app` to `~/Applications`.
 |------|---------|
 | Keep display on | `caffeinate -d [-t seconds]` |
 | Allow screen sleep | `caffeinate -i [-t seconds]` |
+
+## Clash Verge Rev
+
+Clash Verge Rev macOS Apple Silicon client.
+
+![macOS](https://img.shields.io/badge/macOS-11.0%2B-blue?logo=apple)
+![Version](https://img.shields.io/badge/version-2.5.1-green)
+![Architecture](https://img.shields.io/badge/arch-arm64-lightgrey)
+
+### Download
+
+[Download Clash.Verge_2.5.1_aarch64.dmg](https://github.com/zhuchichi56/Mac-Applications/releases/download/clash-verge-rev-v2.5.1/Clash.Verge_2.5.1_aarch64.dmg)
+
+### App Info
+
+| Field | Value |
+|-------|-------|
+| App bundle | `Clash Verge.app` |
+| Bundle ID | `io.github.clash-verge-rev.clash-verge-rev` |
+| Version | `2.5.1` |
+| Minimum macOS | `11.0` |
+| Architecture | `arm64` |
+| Code signing | Signed, Team ID `JPH3Z7PPBB` |
+| SHA-256 | `a2016a77922b67ac058b6c247aad7809893b429f238ee7aeee1fee6e3bf70e2b` |
 
 ## FastLink Lite
 
