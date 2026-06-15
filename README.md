@@ -7,6 +7,7 @@ A collection of small macOS apps and installers. Each app has its own section, r
 | App | Version | Type | Download |
 |-----|---------|------|----------|
 | [WakeKeeper](#wakekeeper) | 1.0 | Menu bar utility | [WakeKeeper-1.0.dmg](https://github.com/zhuchichi56/Mac-Applications/releases/download/v1.0/WakeKeeper-1.0.dmg) |
+| [MenuBarGuard](#menubarguard) | 1.0 | Menu bar spacer | [MenuBarGuard-1.0.dmg](https://github.com/zhuchichi56/Mac-Applications/releases/download/menubarguard-v1.0/MenuBarGuard-1.0.dmg) |
 | [Clash Verge Rev](#clash-verge-rev) | 2.5.1 | Proxy client | [Clash.Verge_2.5.1_aarch64.dmg](https://github.com/zhuchichi56/Mac-Applications/releases/download/clash-verge-rev-v2.5.1/Clash.Verge_2.5.1_aarch64.dmg) |
 | [FastLink Lite](#fastlink-lite) | 3.0.3 | macOS installer | [flapp-lite.pkg](https://github.com/zhuchichi56/Mac-Applications/releases/download/fastlink-lite-v3.0.3/flapp-lite.pkg) |
 
@@ -58,6 +59,49 @@ The build script installs `WakeKeeper.app` to `~/Applications`.
 |------|---------|
 | Keep display on | `caffeinate -d [-t seconds]` |
 | Allow screen sleep | `caffeinate -i [-t seconds]` |
+
+## MenuBarGuard
+
+A lightweight menu bar helper for Mac notch/menu-bar crowding. It creates an adjustable empty status item, so you can reserve space near the notch and keep important menu bar icons visible.
+
+![macOS](https://img.shields.io/badge/macOS-11.0%2B-blue?logo=apple)
+![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
+![Version](https://img.shields.io/badge/version-1.0-green)
+![Architecture](https://img.shields.io/badge/arch-arm64-lightgrey)
+
+### Download
+
+[Download MenuBarGuard-1.0.dmg](https://github.com/zhuchichi56/Mac-Applications/releases/download/menubarguard-v1.0/MenuBarGuard-1.0.dmg)
+
+### Features
+
+| Feature | Detail |
+|---------|--------|
+| Adjustable guard gap | 0 to 640 px, with presets and 20 px fine tuning |
+| Notch estimate | Uses macOS safe-area APIs when available, otherwise falls back to 220 px |
+| Menu bar only | No Dock icon or normal app window |
+| Persistence | Remembers enabled state and width |
+| Public APIs | Uses AppKit `NSStatusItem`; no private menu-bar control APIs |
+
+### Usage
+
+1. Open `MenuBarGuard.app`.
+2. Click `MBG` in the menu bar.
+3. Turn on the blank guard area and tune the width.
+4. Hold Command and drag menu bar icons around the guard area.
+
+macOS does not allow a normal third-party app to directly move or hide other apps' menu bar items. MenuBarGuard reserves space instead.
+
+### App Info
+
+| Field | Value |
+|-------|-------|
+| App bundle | `MenuBarGuard.app` |
+| Bundle ID | `com.zhuchichi.menubarguard` |
+| Version | `1.0` |
+| Architecture | `arm64` |
+| Code signing | Ad-hoc signed |
+| SHA-256 | `ab844eb304fad205d58985f28f0919ae7456c425a8e170e27f1f0a3fdb259ac4` |
 
 ## Clash Verge Rev
 
