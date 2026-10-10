@@ -18,7 +18,9 @@ echo ""
 
 # ── 2. 创建 .app 目录结构 ────────────────────────────────────
 echo "② 创建 $APP_NAME.app 目录结构…"
-rm -rf "$APP_BUNDLE"
+if [ -e "$APP_BUNDLE" ]; then
+  mv "$APP_BUNDLE" "${APP_BUNDLE%.app}.backup-$(date +%Y%m%d-%H%M%S)"
+fi
 mkdir -p "$APP_BUNDLE/Contents/MacOS"
 mkdir -p "$APP_BUNDLE/Contents/Resources"
 
@@ -73,8 +75,8 @@ cat > "$APP_BUNDLE/Contents/MacOS/WakeKeeper" << LAUNCHER
 export PATH="\$HOME/.local/bin:/usr/local/bin:/opt/homebrew/bin:\$PATH"
 
 # 进入项目目录并运行
-cd "\$HOME/wake-keeper"
-exec uv run python main.py
+cd "$SCRIPT_DIR"
+exec "$SCRIPT_DIR/.venv/bin/python" "$SCRIPT_DIR/main.py"
 LAUNCHER
 chmod +x "$APP_BUNDLE/Contents/MacOS/WakeKeeper"
 
@@ -86,7 +88,9 @@ cp "$SCRIPT_DIR/icon.icns" "$APP_BUNDLE/Contents/Resources/icon.icns"
 echo "⑥ 安装到 ~/Applications…"
 mkdir -p "$HOME/Applications"
 DEST="$HOME/Applications/$APP_NAME.app"
-rm -rf "$DEST"
+if [ -e "$DEST" ]; then
+  mv "$DEST" "${DEST%.app}.backup-$(date +%Y%m%d-%H%M%S)"
+fi
 cp -r "$APP_BUNDLE" "$DEST"
 
 # 刷新 LaunchServices（让 Spotlight/Finder 识别）

@@ -4,6 +4,10 @@ WakeKeeper — 防止 Mac 休眠的菜单栏工具
 类似 Amphetamine，使用系统内置 caffeinate 命令。
 """
 
+import atexit
+import fcntl
+import os
+from pathlib import Path
 import subprocess
 import time
 
@@ -34,7 +38,7 @@ class WakeKeeperApp(rumps.App):
         self._session_timer: rumps.Timer | None = None  # 定时自动停止
         self._session_end_time: float = 0.0            # 会话到期时间戳
         self._active = False
-        self.allow_screen_sleep = False                # 是否允许屏幕休眠
+        self.allow_screen_sleep = True                # 是否允许屏幕休眠
 
         # ── 菜单项 ──────────────────────────────────────
         self._status_item = rumps.MenuItem(STATUS_OFF, callback=self.on_toggle)
@@ -48,7 +52,7 @@ class WakeKeeperApp(rumps.App):
         self._screen_sleep_item = rumps.MenuItem(
             "允许屏幕休眠", callback=self.on_toggle_screen_sleep
         )
-        self._screen_sleep_item.state = False  # 默认不勾选
+        self._screen_sleep_item.state = True  # Keep the system awake while allowing display sleep.
 
         quit_item = rumps.MenuItem("退出", callback=self.on_quit)
 
@@ -62,6 +66,7 @@ class WakeKeeperApp(rumps.App):
             None,
             quit_item,
         ]
+        self._start()
 
     # ── 内部启停 ─────────────────────────────────────────
 
@@ -70,22 +75,22 @@ class WakeKeeperApp(rumps.App):
         -d  防止显示器休眠（屏幕保持亮）
         -i  只防系统 idle sleep，允许屏幕变暗/锁屏
         """
-        return "-i" if self.allow_screen_sleep else "-d"
+        return "-i" if self.allow_screen_sleep else "-di"
 
     def _start(self, duration_sec: int | None = None):
         """启动 caffeinate，可选限时（秒）。"""
         self._stop()  # 先清理旧会话
 
         flag = self._caffeinate_flag()
-        cmd = ["caffeinate", flag]
+        # Release assertions automatically if the app crashes or is terminated.
+        cmd = ["/usr/bin/caffeinate", flag, "-w", str(os.getpid())]
+        self._process = subprocess.Popen(cmd + (["-t", str(duration_sec)] if duration_sec else []))
         if duration_sec:
-            cmd += ["-t", str(duration_sec)]
             # 用 rumps.Timer（主线程）监控到期，自动更新 UI
-            self._session_end_time = time.time() + duration_sec
+            self._session_end_time = time.monotonic() + duration_sec
             self._session_timer = rumps.Timer(self._check_session, 2)
             self._session_timer.start()
 
-        self._process = subprocess.Popen(cmd)
         self._active = True
         self.title = "⚡"
         self._status_item.title = STATUS_ON
@@ -97,7 +102,9 @@ class WakeKeeperApp(rumps.App):
             self._session_timer = None
 
         if self._process:
-            self._process.terminate()
+            if self._process.poll() is None:
+                self._process.terminate()
+            self._process.wait()
             self._process = None
 
         self._active = False
@@ -106,7 +113,7 @@ class WakeKeeperApp(rumps.App):
 
     def _check_session(self, timer: rumps.Timer):
         """每 2 秒检查定时是否到期（在主线程执行）。"""
-        if time.time() >= self._session_end_time:
+        if time.monotonic() >= self._session_end_time:
             timer.stop()
             self._stop()
 
@@ -135,7 +142,11 @@ class WakeKeeperApp(rumps.App):
         sender.state = self.allow_screen_sleep
         # 如果正在运行，重启以应用新的 caffeinate 参数
         if self._active:
-            self._start()
+            remaining = self._session_end_time - time.monotonic() if self._session_timer else None
+            if remaining is not None and remaining <= 0:
+                self._stop()
+            else:
+                self._start(max(1, int(remaining)) if remaining is not None else None)
 
     def on_quit(self, _sender):
         """退出时先杀掉 caffeinate。"""
@@ -144,4 +155,14 @@ class WakeKeeperApp(rumps.App):
 
 
 if __name__ == "__main__":
-    WakeKeeperApp().run()
+    # All app copies share one lock, preventing duplicate menu bar icons.
+    state_dir = Path.home() / "Library/Application Support/WakeKeeper"
+    state_dir.mkdir(parents=True, exist_ok=True)
+    with (state_dir / "instance.lock").open("a") as instance_lock:
+        try:
+            fcntl.flock(instance_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise SystemExit(0)
+        app = WakeKeeperApp()
+        atexit.register(app._stop)
+        app.run()

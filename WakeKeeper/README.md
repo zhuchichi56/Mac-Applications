@@ -12,8 +12,9 @@ inspired by [Amphetamine](https://apps.apple.com/app/amphetamine/id937984704), b
 ## Features
 
 - **Timed sessions** — 15 min / 30 min / 1 h / 2 h / 4 h, auto-stops when time is up
-- **Indefinite mode** — stay awake until you click to stop
-- **Screen-sleep mode** — keep the system awake while allowing the screen to dim / lock
+- **Indefinite mode** — starts automatically; stay awake until you click to stop
+- **Screen-sleep mode (default)** — keep the system awake while allowing the screen to dim / lock
+- **Single instance** — opening the app repeatedly does not create duplicate icons
 - **Menu bar only** — no Dock icon, no App Switcher clutter (`LSUIElement = true`)
 - **Zero permissions** — uses macOS built-in `caffeinate`; no privacy prompts required
 
@@ -78,8 +79,8 @@ WakeKeeper calls the macOS built-in `caffeinate` command as a subprocess:
 
 | Mode | Command |
 |------|---------|
-| Keep display on | `caffeinate -d [-t <seconds>]` |
-| Allow screen sleep | `caffeinate -i [-t <seconds>]` |
+| Keep display on | `caffeinate -di -w <app-pid> [-t <seconds>]` |
+| Allow screen sleep | `caffeinate -i -w <app-pid> [-t <seconds>]` |
 
 A `rumps.Timer` (fires on the main thread every 2 s) monitors timed sessions and  
 updates the menu bar UI when a session ends.
@@ -100,31 +101,28 @@ WakeKeeper/
 
 ---
 
-## Auto-launch at login (optional)
+## Auto-launch at login
 
-Save the following as `~/Library/LaunchAgents/com.user.wakekeeper.plist`:
+After building the app, run:
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
-  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>Label</key>       <string>com.user.wakekeeper</string>
-  <key>ProgramArguments</key>
-  <array>
-    <string>/bin/bash</string>
-    <string>/Users/YOUR_USERNAME/Mac-Applications/WakeKeeper/run.sh</string>
-  </array>
-  <key>RunAtLoad</key>   <true/>
-</dict>
-</plist>
-```
-
-Then run:
 ```bash
-launchctl load ~/Library/LaunchAgents/com.user.wakekeeper.plist
+bash install_autostart.sh
 ```
+
+This installs one `com.user.wakekeeper` LaunchAgent. Login startup and manual
+launch both use the maintained project path and start indefinite system
+keep-awake, with display sleep allowed. Choosing Quit stops the app until the
+next login or manual launch. The app requires this project and its uv environment
+to remain installed.
+
+The menu bar entry may be listed as **Python** in macOS Menu Bar settings because
+this app uses the Python runtime. Enable that entry to show its coffee/lightning
+icon. Clicking the application in Finder opens a menu bar tool, not a window;
+click the menu bar icon to change the active session.
+
+This prevents **idle system sleep**. It does not override lid-close sleep,
+explicit Sleep commands, shutdown, or critical battery behavior. Screen locking
+and screen sleep remain available in the default mode.
 
 ---
 

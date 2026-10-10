@@ -57,8 +57,8 @@ The build script installs `WakeKeeper.app` to `~/Applications`.
 
 | Mode | Command |
 |------|---------|
-| Keep display on | `caffeinate -d [-t seconds]` |
-| Allow screen sleep | `caffeinate -i [-t seconds]` |
+| Keep display on | `caffeinate -di -w <app-pid> [-t seconds]` |
+| Allow screen sleep | `caffeinate -i -w <app-pid> [-t seconds]` |
 
 ## MenuBarGuard
 
